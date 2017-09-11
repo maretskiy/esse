@@ -1,0 +1,15 @@
+#!/bin/sh
+# Check directories and files permissions recursively
+
+PERMD=755
+PERMF=644
+
+if ! test -d "${1}"
+then
+    echo "Check permissions recursively: dirs>=${PERMD}, files>=${PERMF}"
+    echo "Usage:" $(basename "${0}") "<start_directory>"
+    exit
+fi
+
+find "${1}" -type d  \( -not -perm -${PERMD} \) -exec stat -c "%-6U %-11A %-10s %n" {} \;
+find "${1}" -type f  \( -not -perm -${PERMF} \) -exec stat -c "%-6U %-11A %-10s %n" {} \;

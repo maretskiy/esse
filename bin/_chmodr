@@ -1,0 +1,15 @@
+#!/bin/sh
+# Change directories and files permissions recursively
+
+PERMF=644
+PERMD=755
+
+if ! test -d "${1}"
+then
+    echo "Change permissions recursively: dirs=${PERMD}, files=${PERMF}"
+    echo "Usage:" $(basename "${0}") "<start_directory>"
+    exit
+fi
+
+find "${1}" -type d -exec chmod ${PERMD} {} \;
+find "${1}" -type f -exec chmod ${PERMF} {} \;

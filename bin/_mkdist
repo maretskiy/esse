@@ -1,0 +1,61 @@
+#!/bin/sh
+# Make distribution tarball of current directory
+# Version 20141211
+
+PROGRAM="_mkdist"
+WORKDIR=$(pwd)
+DISTDIR=$(basename "${WORKDIR}")
+TIMESTR=$(date +%Y%m%d%H%M%S)
+ARCHIVE="${DISTDIR}.${TIMESTR}.tar.gz"
+SLEEP=1
+
+if test "${1}"
+then
+    echo "${PROGRAM} - create tarball of working directory" >&2
+    exit 1
+fi
+
+err()
+{
+    printf "\033[31mError:\033[0m ${1}\n" >&2
+    if test "${2}"
+    then
+        printf "\n%s\n\n" "${2}"
+    fi
+    exit 1
+}
+
+# Go level UP
+cd .. || err "failed to cd to parent directory"
+
+# Archiving
+ARCHIVE="${DISTDIR}.$(date +%Y%m%d%H%M%S).tar.gz"
+
+RESULT=$(tar cpzf "${ARCHIVE}" "${DISTDIR}" 2>&1)
+STATUS=${?}
+
+# Clip name
+unset CLIPPED
+if which xclip
+then
+    printf "$(pwd)/${ARCHIVE}" | xclip
+    CLIPPED=" (xclipped)"
+fi
+
+if test ${STATUS} -eq 0
+then
+    # Success
+    printf "\033[32mtarball created%s:\033[0m\n" "${CLIPPED}"
+else
+    if tar -tf "${ARCHIVE}" >/dev/null 2>/dev/null
+    then
+        # Warning
+        printf "\033[33mincomplete archive created%s:\033[0m\n" "${CLIPPED}"
+    else
+        # Error
+        err "failed to create archive: ${ARCHIVE}" "${RESULT}"
+        rm -f "${ARCHIVE}"
+    fi
+fi
+
+test -f "${ARCHIVE}" && ls -l "${ARCHIVE}"
