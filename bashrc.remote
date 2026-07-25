@@ -39,8 +39,8 @@ alias SS='git show --stat'
 
 +pyclean () {
     test -d "${1}"\
-        && echo "removing *pyc files from ${1}"\
-        && find "${1}" -type f -name \*.pyc -exec rm {} \;\
+        && echo "removing __pycache__ dirs from ${1}"\
+        && find "${1}" -type d -name __pycache__ -prune -exec rm -rf {} +\
         && return
     echo "Usage: _pyclean <path/to/dir>">&2
 }

@@ -37,6 +37,7 @@ set softtabstop=4
 " Autohandle file types
 filetype on
 filetype plugin on
+filetype indent on
 
 " Max highlight
 let python_highlight_all = 1
@@ -44,32 +45,19 @@ let python_highlight_all = 1
 " 256 colors (X only)
 set t_Co=256
 
-" Omnicomletion
-autocmd FileType python     set omnifunc=pythoncomplete#Complete
+" Omnicompletion
+autocmd FileType python     set omnifunc=python3complete#Complete
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html       set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType css        set omnifunc=csscomplete#CompleteCSSi
+autocmd FileType css        set omnifunc=csscomplete#CompleteCSS
 
-" Autocomplete by Tab
-function InsertTabWrapper()
-    let col = col('.') - 1
-        if !col || getline('.')[col - 1] !~ '\k'
-        return "\"
-    else
-        return "\<c-p>"
-    endif
+" Autocomplete sources
+set complete=.,k,b,t
+
+" *.py: Trim trailing spaces on save, keeping the cursor in place
+function! TrimTrailingSpaces()
+    let l:view = winsaveview()
+    %s/\s\+$//e
+    call winrestview(l:view)
 endfunction
-
-" Show autocomplete options
-"imap <c-r>=InsertTabWrapper()
-set complete=""
-set complete+=.
-set complete+=k
-set complete+=b
-set complete+=t
-
-" *.py: Trim trailing spaces on save
-autocmd BufWritePre *.py normal m`:%s/\s\+$//e ``
-
-" *.py: Use smart indentation after keywords
-autocmd BufRead *.py set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
+autocmd BufWritePre *.py call TrimTrailingSpaces()

@@ -1,25 +1,30 @@
-test "${ENV_IS_SET_UP}" && return
-export ENV_IS_SET_UP=1
-
 export EDITOR=vim
+bindkey -e
+
+HISTFILE=${HOME}/.zsh_history
+HISTSIZE=2000
+SAVEHIST=2000
+setopt hist_ignore_dups hist_ignore_space inc_append_history
+
+autoload -Uz compinit && compinit -i
 
 alias ..='cd ..'
 alias grep='grep --color=auto'
 alias gr='grep -siIr --color=auto'
 alias g='grep -siI --color=auto'
-alias ls='ls --color=auto'
-alias ll='ls -lhap --color=auto'
+alias ls='ls -G'
+alias ll='ls -lhapG'
 alias vi='vim -XNn'
-alias d='df -hT'
-alias e='emacs -nw'
-alias f='free -m'
+alias d='df -h'
+alias e='vim -XNn'
+alias f='vm_stat'
 alias l=less
-alias n='netstat -lnptu'
+alias n='lsof -iTCP -sTCP:LISTEN -P -n'
 alias p='ps aux'
 alias u='du -sh'
 
 alias wget='wget -c -t 120 --no-check-certificate'
-alias psgrep='ps aux | grep'
+alias psgrep='ps auxww | grep'
 alias forget='ssh-keygen -f ${HOME}/.ssh/known_hosts -R'
 
 alias s='git status'
@@ -32,7 +37,7 @@ alias T='git log --oneline --decorate --graph'
 alias S='git show'
 alias SS='git show --stat'
 
-+pyclean () {
+function +pyclean {
     test -d "${1}"\
         && echo "removing __pycache__ dirs from ${1}"\
         && find "${1}" -type d -name __pycache__ -prune -exec rm -rf {} +\
@@ -41,11 +46,9 @@ alias SS='git show --stat'
 }
 alias _pyclean=+pyclean
 
-if test $(id -u) -eq 0
-then
-    export PS1="\[\033[01;31m\]\u@\h:\[\033[01;34m\]\W\[\033[01;3\$(if test \${?} -eq 0; then echo 2; else echo 1; fi)m\]#\[\033[0m\] "
-else
-    export PS1="\[\033[01;33m\]\u@\h:\[\033[01;34m\]\W\[\033[01;3\$(if test \${?} -eq 0; then echo 2; else echo 1; fi)m\]$\[\033[0m\] "
-fi
+PROMPT='%B%(!.%F{red}.%F{yellow})%n@%m:%F{blue}%1~%(?.%F{green}.%F{red})%(!.#.$)%f%b '
 
-test -f ${HOME}/.bootstrap && . ${HOME}/.bootstrap
+if test -f "${HOME}/.zshsetup"
+then
+    . "${HOME}/.zshsetup"
+fi
