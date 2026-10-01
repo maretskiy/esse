@@ -1,0 +1,41 @@
+[color]
+    ui = auto
+
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+    whitespace = red reverse
+
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+
+[core]
+    whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+    editor = vim
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true
+    line-numbers = true
+    whitespace-error-style = red reverse
+    # side-by-side = true
+    # syntax-theme = Dracula
+
+[merge]
+    conflictStyle = zdiff3
+
+[user]
+	name = My Name
+	email = my-email@example.org
