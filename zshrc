@@ -20,7 +20,6 @@ alias ll='ls -lhapG'
 alias vi='vim -XNn'
 alias d='df -h'
 alias e='vim -XNn'
-alias f='vm_stat'
 alias l=less
 alias n='lsof -iTCP -sTCP:LISTEN -P -n'
 alias p='ps aux'
@@ -32,6 +31,7 @@ alias forget='ssh-keygen -f ${HOME}/.ssh/known_hosts -R'
 
 alias s='git status'
 alias D='git diff'
+alias DP='git -c core.pager=less diff'
 alias C='git diff --cached'
 alias B='git branch'
 alias N='git branch --no-merged'
@@ -42,13 +42,14 @@ alias S='git show'
 alias SS='git show --stat'
 
 function +pyclean {
-    test -d "${1}"\
-        && echo "removing __pycache__ dirs from ${1}"\
-        && find "${1}" -type d -name __pycache__ -prune -exec rm -rf {} +\
-        && return
-    echo "Usage: _pyclean <path/to/dir>">&2
+    if [[ ! -d "$1" ]]; then
+        echo "Usage: ,pyclean <path/to/dir>" >&2
+        return 1
+    fi
+    echo "removing __pycache__ dirs from $1"
+    find "$1" -type d -name __pycache__ -prune -exec rm -rf {} +
 }
-alias _pyclean=+pyclean
+alias ,pyclean=+pyclean
 
 PROMPT='%B%(!.%F{red}.%F{yellow})%n@%m:%F{blue}%1~%(?.%F{green}.%F{red})%(!.#.$)%f%b '
 
